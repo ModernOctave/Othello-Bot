@@ -12,6 +12,8 @@
 using namespace std;
 using namespace Desdemona;
 
+
+
 class MyBot: public OthelloPlayer
 {
     public:
@@ -20,25 +22,27 @@ class MyBot: public OthelloPlayer
          * This could do anything from open up a cache of "best moves" to
          * spawning a background processing thread. 
          */
+
+        
+
         MyBot( Turn turn );
 
         /**
          * Play something 
          */
         virtual Move play( const OthelloBoard& board );
+        virtual int minimax( const OthelloBoard& board, int depth, bool maximizingPlayer);
     private:
 };
+
 
 MyBot::MyBot( Turn turn )
     : OthelloPlayer( turn )
 {
 }
 
-Move MyBot::play( const OthelloBoard& board )
+int MyBot::minimax( const OthelloBoard& board, int depth, bool maximizingPlayer )
 {
-    board.print();
-    int minimax( const OthelloBoard& board, int depth, bool maximizingPlayer )
-    {
         if ( depth == 0 )
         {
                 switch( turn )
@@ -52,16 +56,44 @@ Move MyBot::play( const OthelloBoard& board )
 
         if ( maximizingPlayer )
         {
-            maxEval = -1000000;
-            moves = board.getValidMoves( turn );
-            for ( it = moves.begin(); it != moves.end(); it++ )
+            int maxEval = -1000000;
+            list<Move> moves = board.getValidMoves( turn );
+            for ( auto it = moves.begin(); it != moves.end(); it++ )
             {
                 OthelloBoard newBoard = board;
-                newBoard.makeMove( *it, turn );
+                newBoard.OthelloBoard::makeMove(  turn, (*it).x, (*it).y );
                 maxEval = max( maxEval, minimax( newBoard, depth - 1, not maximizingPlayer ) );
             }
         }
-    }
+
+        else
+        {
+            int minEval = 1000000;
+            list<Move> moves = board.getValidMoves(turn);
+            for (auto it = moves.begin(); it != moves.end(); it++ )
+            {
+                OthelloBoard newBoard = board;
+                newBoard.OthelloBoard::makeMove(  turn, (*it).x, (*it).y );
+                minEval = min(minEval, minimax( newBoard, depth - 1, maximizingPlayer));
+            }
+
+            // int size = moves.size();
+
+            // for(int i=0; i<size; i++)
+            // {
+            //     OthelloBoard newBoard = board;
+            //     newBoard.makeMove(moves[i], turn);
+            //     minEval = min(minEval, minimax(newBoard, depth-1, maximizingPlayer));
+            // }
+        }
+    };
+
+Move MyBot::play( const OthelloBoard& board )
+{
+
+    board.print();
+    int minimax( const OthelloBoard& board, int depth, bool maximizingPlayer );
+    
     // Default function below
     list<Move> moves = board.getValidMoves( turn );
     int randNo = rand() % moves.size();
