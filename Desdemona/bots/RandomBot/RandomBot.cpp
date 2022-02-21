@@ -38,8 +38,8 @@ RandomBot::RandomBot( Turn turn ) :
 }
 
 Move RandomBot::play( const OthelloBoard& board )
-{	
-	// board.print();
+{
+//	board.print();
     list<Move> moves = board.getValidMoves( turn );
     int randNo = rand() % moves.size();
     list<Move>::iterator it = moves.begin();
