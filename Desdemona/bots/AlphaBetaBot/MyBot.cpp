@@ -31,7 +31,7 @@ class MyBot: public OthelloPlayer
          * Play something 
          */
         virtual Move play( const OthelloBoard& board );
-        virtual int minimax( const OthelloBoard& board, int depth, bool maximizingPlayer);
+        virtual int minimax( const OthelloBoard& board, int depth, int alpha, int beta, bool maximizingPlayer);
     private:
 };
 
@@ -41,7 +41,7 @@ MyBot::MyBot( Turn turn )
 {
 }
 
-int MyBot::minimax( const OthelloBoard& board, int depth, bool maximizingPlayer )
+int MyBot::minimax( const OthelloBoard& board, int depth, int alpha, int beta, bool maximizingPlayer )
 {
         if ( depth == 0 )
         {
@@ -57,24 +57,38 @@ int MyBot::minimax( const OthelloBoard& board, int depth, bool maximizingPlayer 
         if ( maximizingPlayer )
         {
             int maxEval = -1000000;
+            int eval;
             list<Move> moves = board.getValidMoves( turn );
             for ( list<Move>::iterator it = moves.begin(); it != moves.end(); it++ )
             {
                 OthelloBoard newBoard = board;
                 newBoard.makeMove( turn, *it );
-                maxEval = max( maxEval, minimax( newBoard, depth - 1, false ) );
+                eval = minimax( newBoard, depth - 1, alpha, beta, false );
+                maxEval = max( maxEval, eval );
+                alpha = max( alpha, eval );
+                if ( beta <= alpha )
+                {
+                    break;
+                }
             }
             return maxEval;
         }
         else
         {
             int minEval = 1000000;
+            int eval;
             list<Move> moves = board.getValidMoves(turn);
             for (list<Move>::iterator it = moves.begin(); it != moves.end(); it++ )
             {
                 OthelloBoard newBoard = board;
                 newBoard.makeMove( turn, *it );
-                minEval = min(minEval, minimax( newBoard, depth - 1, true));
+                eval = minimax( newBoard, depth - 1, alpha, beta, true );
+                minEval = min( minEval, eval );
+                beta = min( beta, eval );
+                if ( beta <= alpha )
+                {
+                    break;
+                }
             }
             return minEval;
         }
@@ -100,7 +114,7 @@ Move MyBot::play( const OthelloBoard& board )
     {
         OthelloBoard newBoard = board;
         newBoard.makeMove( turn, *it );
-        int eval = minimax( newBoard, 4, false );
+        int eval = minimax( newBoard, 15, -10000, 10000, false );
         if ( eval > maxEval )
         {
             maxEval = eval;
