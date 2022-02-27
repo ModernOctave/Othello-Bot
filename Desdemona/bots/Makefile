@@ -7,7 +7,7 @@ ROOTDIR  = ../
 include $(ROOTDIR)Makefile.inc
 
 # Add your bot(s) here
-BOTS   	 = RandomBot TuringBot SlowBot MyBot MinimaxBot
+BOTS   	 = RandomBot TuringBot SlowBot MyBot MinimaxBot AlphaBetaBot
 DIRS	 = $(BOTS)
 
 all: ${BOTS}
